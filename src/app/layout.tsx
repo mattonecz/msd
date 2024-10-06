@@ -12,7 +12,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="msd" style={{ margin: 0 }}>
+        {children}
+      </body>
     </html>
   );
 }

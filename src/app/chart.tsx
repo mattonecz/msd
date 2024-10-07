@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "@antv/g2";
 import { ApiResponseType, ResultsType } from "@/models";
-import { loadData } from "@/api";
 
 export type ChartProps = {
   url: string;

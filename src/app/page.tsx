@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  Card,
   Col,
   ConfigProvider,
   Layout,

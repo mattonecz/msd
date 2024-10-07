@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "@antv/g2";
-import { ResultsType } from "@/models";
+import { ApiResponseType, ResultsType } from "@/models";
 import { loadData } from "@/api";
 
 export type ChartProps = {
@@ -14,8 +14,15 @@ export const ChartComp = (props: ChartProps) => {
   const [data, setData] = useState<ResultsType[] | undefined>(undefined);
 
   const getData = async () => {
-    const res = await loadData(url);
-    setData(res);
+    const response = await fetch("/api/fetchData", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ url }),
+    });
+    const data = await response.json();
+    setData((data as unknown as ApiResponseType).results);
   };
 
   useEffect(() => {

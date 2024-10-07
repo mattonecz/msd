@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "@antv/g2";
 import { ResultsType } from "@/models";
-import { loadData } from "./helpers";
+import { loadData } from "@/api";
 
 export type ChartProps = {
   url: string;

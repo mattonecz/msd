@@ -1,0 +1,9 @@
+@media (min-width: 600px) {
+  .titleCol {
+    display: flex;
+    justify-content: space-between;
+  }
+  .titleCharts {
+    padding: 0;
+  }
+}

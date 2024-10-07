@@ -12,6 +12,7 @@ import { Content, Header } from "antd/es/layout/layout";
 import Title from "antd/es/typography/Title";
 import { Charts } from "./components/charts";
 import { AlignCenterOutlined, DownloadOutlined } from "@ant-design/icons";
+import "./styles.css";
 
 export default function Home() {
   return (
@@ -28,7 +29,7 @@ export default function Home() {
             background: "white",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
             justifyContent: "center",
-            padding: "0 80px",
+            padding: "0 10vw",
           }}
         >
           <Title level={2} style={{ marginTop: 15, color: "#1DA57A" }}>
@@ -48,16 +49,21 @@ export default function Home() {
             }}
           >
             <Col
+              className="titleCol"
               xs={24}
               lg={16}
               style={{
-                display: "flex",
-                justifyContent: "space-between",
                 alignItems: "center",
               }}
             >
-              <h3 style={{ margin: 0 }}>Example charts</h3>
-              <Space style={{ gap: 20 }}>
+              <Title
+                className="titleCharts"
+                level={3}
+                style={{ margin: 0, padding: 8 }}
+              >
+                Example charts
+              </Title>
+              <Space style={{ gap: "1vw" }}>
                 <Button
                   icon={<DownloadOutlined style={{ color: "#1DA57A" }} />}
                   iconPosition="end"

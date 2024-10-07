@@ -1,43 +1,39 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { Chart } from "@antv/g2";
-import { ApiResponseType, ResultsType } from "@/models";
+import { ResultsType } from "@/models";
+import { loadData } from "./helpers";
 
-export const ChartComp = () => {
-  const [dataReady, setDataReady] = useState(false);
-  const [data, setData] = useState<ResultsType[]>();
-  const loadData = async () => {
-    const response = await fetch(
-      "https://api.ukhsa-dashboard.data.gov.uk/themes/infectious_disease/sub_themes/respiratory/topics/COVID-19/geography_types/Nation/geographies/England/metrics/COVID-19_testing_PCRcountByDay"
-    );
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    const body = await response.json();
-    setDataReady(true);
-    setData((body as unknown as ApiResponseType).results);
+export type ChartProps = {
+  url: string;
+  type: "pie" | "graph";
+  containerName: string;
+};
+
+export const ChartComp = (props: ChartProps) => {
+  const { url, type, containerName } = props;
+  const [data, setData] = useState<ResultsType[] | undefined>(undefined);
+
+  const getData = async () => {
+    const res = await loadData(url);
+    setData(res);
   };
 
   useEffect(() => {
-    loadData();
+    getData();
   }, []);
 
   useEffect(() => {
-    if (dataReady && data) {
-      console.log(data);
+    if (data) {
       const chart = new Chart({
-        container: "container",
+        container: containerName,
         autoFit: true,
         height: 500,
       });
-
-      chart
-        .interval()
-        .data(data)
-        .encode("x", "date")
-        .encode("y", "metric_value")
-        .encode("color", "date");
+      if (type === "graph") {
+        getGraph(chart, data);
+      } else {
+        getPie(chart, data);
+      }
 
       chart.render();
 
@@ -45,7 +41,37 @@ export const ChartComp = () => {
         chart.destroy();
       };
     }
-  }, [dataReady, data]);
+  }, [data, containerName, type]);
+  return <div id={containerName} style={{ height: "500px" }}></div>;
+};
 
-  return <div id="container" style={{ height: "500px" }}></div>;
+const getPie = (chart: Chart, data: ResultsType[]) => {
+  chart.coordinate({ type: "theta", outerRadius: 0.8 });
+  chart
+    .interval()
+    .data(data)
+    .transform({ type: "stackY" })
+    .encode("y", "metric_value")
+    .encode("color", "date")
+    .legend("color", {
+      position: "bottom",
+      layout: { justifyContent: "center" },
+    })
+    .label({
+      position: "outside",
+      text: (data: ResultsType) => `${data.date}: ${data.metric_value}`,
+    })
+    .tooltip((data: ResultsType) => ({
+      name: data.date,
+      value: `${data.metric_value}`,
+    }));
+};
+
+const getGraph = (chart: Chart, data: ResultsType[]) => {
+  chart
+    .interval()
+    .data(data)
+    .encode("x", "date")
+    .encode("y", "metric_value")
+    .encode("color", "date");
 };
